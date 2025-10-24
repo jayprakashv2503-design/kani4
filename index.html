@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<!--
+  love-journey.html
+  Single-file romantic "Love Journey" website from Jayprakash to Kanishka
+  Instructions:
+  - Replace placeholder images with your actual photos where indicated.
+  - Replace audio placeholder with your own gentle music (mp3/ogg).
+  - All CSS/JS is inline; no external files required except Google Fonts.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Kanishka — From Jayprakash</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --gradient: linear-gradient(135deg,#fff7fb 0%, #f7fcff 45%, #fffaf0 100%);
+    --accent:#ff77a9;
+    --muted:#7f8c8d;
+    --card:rgba(255,255,255,0.85);
+    --shadow:0 8px 30px rgba(20,20,30,0.08);
+    --ease:cubic-bezier(.2,.9,.25,1);
+    --duration:0.6s;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none!important;animation:none!important;}
+  }
+  body,html{margin:0;padding:0;height:100%;font-family:Inter,sans-serif;background:var(--gradient);color:#222;line-height:1.5;}
+  .site{display:flex;flex-direction:column;min-height:100vh;}
+
+  /* HERO SECTION */
+  header.hero{
+    position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;
+    text-align:center;overflow:hidden;background:var(--gradient);padding:2rem;
+  }
+  .hero h1{font-family:'Dancing Script', serif;font-size:clamp(2rem,5vw,4rem);margin:0;color:#3a0b2a;opacity:0;animation:fadeIn 1.5s forwards;}
+  .hero p{margin-top:.5rem;font-size:clamp(1rem,2vw,1.25rem);color:var(--muted);opacity:0;animation:fadeIn 1.5s forwards 0.7s;}
+  @keyframes fadeIn{to{opacity:1;}}
+  .particles{position:absolute;inset:0;pointer-events:none;z-index:1;}
+  .particle{position:absolute;background:rgba(255,200,220,0.15);border-radius:50%;animation:drift 15s linear infinite;}
+  @keyframes drift{0%{transform:translateY(-20vh)}100%{transform:translateY(120vh)}}
+  .cta-arrow{margin-top:2rem;cursor:pointer;display:inline-block;transition:transform var(--duration) var(--ease);}
+  .cta-arrow svg{width:36px;height:36px;animation:float 3s var(--ease) infinite;}
+  @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
+
+  /* TIMELINE */
+  main{flex:1;max-width:1100px;margin:0 auto;padding:2rem 1rem;}
+  section.timeline{margin-top:3rem;}
+  .timeline-wrap{display:flex;gap:1rem;overflow:auto;padding:1rem 0;}
+  .timeline-item{
+    flex:0 0 80%;max-width:400px;background:var(--card);border-radius:14px;padding:1rem;box-shadow:var(--shadow);
+    display:flex;gap:1rem;align-items:flex-start;opacity:0;transform:translateY(20px);transition:opacity var(--duration) var(--ease), transform var(--duration) var(--ease);cursor:pointer;
+  }
+  .timeline-item.in-view{opacity:1;transform:none;}
+  .timeline-thumb{width:64px;height:64px;border-radius:50%;overflow:hidden;border:3px solid #fff;flex-shrink:0;}
+  .timeline-thumb img{width:100%;height:100%;object-fit:cover;}
+  .timeline-meta{flex:1}
+  .timeline-date{font-weight:600;color:var(--accent);font-size:.95rem;}
+  .timeline-caption{margin-top:.25rem;color:#333;}
+  @media(min-width:900px){.timeline-wrap{flex-direction:column;overflow:visible;} .timeline-item{flex:1 1 auto;max-width:none;}}
+
+  /* MODAL */
+  .modal{
+    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.98);
+    width:min(880px,95%);max-height:86vh;overflow:auto;background:linear-gradient(180deg,#fffefc,#fffdf6);
+    border-radius:12px;box-shadow:0 20px 60px rgba(20,20,30,0.3);padding:1.2rem;display:none;z-index:50;
+  }
+  .modal.open{display:block;animation:pop .35s var(--ease) both;}
+  @keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.96)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+  .modal-close{position:absolute;top:10px;right:10px;background:none;border:0;font-size:1.2rem;cursor:pointer;}
+
+  /* GALLERY */
+  section.gallery{margin-top:3rem;}
+  .carousel{position:relative;border-radius:12px;overflow:hidden;background:var(--card);box-shadow:var(--shadow);padding:1rem;}
+  .slides{display:flex;transition:transform .5s var(--ease);}
+  .slide{min-width:100%;flex-shrink:0;display:flex;justify-content:center;align-items:center;gap:1rem;}
+  .slide img{max-width:100%;max-height:56vh;border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,0.08);}
+  .carousel-controls{position:absolute;top:50%;width:100%;display:flex;justify-content:space-between;padding:0 1rem;transform:translateY(-50%);}
+  .btn{background:#fff;border:0;padding:.5rem .7rem;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,0.06);cursor:pointer;}
+  .caption{margin-top:.5rem;font-size:.95rem;color:var(--muted);text-align:center;}
+  .ghibli .slide img{filter:contrast(1.05) saturate(1.02) blur(.4px) sepia(.06);mix-blend-mode:soft-light;}
+
+  /* LOVE LETTER */
+  .letter{margin-top:3rem;display:flex;justify-content:center;}
+  .letter-card{width:min(720px,96%);background:linear-gradient(180deg,#fffdf6,#fff9f0);border-radius:12px;padding:1rem;box-shadow:var(--shadow);}
+  .paper{perspective:1200px;transform-style:preserve-3d;}
+  .paper-inner{transform-origin:top center;transition:transform .9s var(--ease);}
+  .paper.closed .paper-inner{transform:rotateX(86deg);}
+  .paper-content{font-family:'Dancing Script',serif;font-size:1.15rem;color:#402233;line-height:1.7;margin-top:.5rem;}
+  .paper-meta{display:flex;justify-content:space-between;align-items:center;}
+  .small{font-size:.86rem;color:var(--muted);}
+  footer{padding:2rem 1rem;text-align:center;color:var(--muted);font-size:.9rem;}
+
+</style>
+</head>
+<body>
+<div class="site">
+  <!-- HERO -->
+  <header class="hero">
+    <div class="particles" aria-hidden="true">
+      <div class="particle" style="left:10%;top:20%;width:4px;height:4px;"></div>
+      <div class="particle" style="left:50%;top:40%;width:6px;height:6px;"></div>
+      <div class="particle" style="left:80%;top:10%;width:3px;height:3px;"></div>
+    </div>
+    <div class="hero-content" style="position:relative;z-index:2;">
+      <h1>For Kanishka — From Jayprakash</h1>
+      <p>A small journey of my heart</p>
+      <div class="cta-arrow" id="scrollDown" role="button" tabindex="0">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14" stroke="#3a0b2a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 13l-6 6-6-6" stroke="#3a0b2a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- TIMELINE -->
+    <section class="timeline" id="timeline">
+      <h2 style="font-size:1.25rem;color:#3a0b2a;">Our Moments</h2>
+      <p style="margin:.2rem 0 .8rem;color:var(--muted)">Tap or click any moment to read the memory.</p>
+      <div class="timeline-wrap" id="timelineWrap">
+        <article class="timeline-item" data-index="0" tabindex="0">
+          <div class="timeline-thumb"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="First meeting photo placeholder"></div>
+          <div class="timeline-meta">
+            <div class="timeline-date">2023-02-14</div>
+            <div class="timeline-caption">First shy hello at the coffee stall</div>
+          </div>
+        </article>
+        <article class="timeline-item" data-index="1" tabindex="0">
+          <div class="timeline-thumb"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Rain walk photo placeholder"></div>
+          <div class="timeline-meta">
+            <div class="timeline-date">2023-06-10</div>
+            <div class="timeline-caption">An umbrella, and the world paused for us</div>
+          </div>
+        </article>
+        <article class="timeline-item" data-index="2" tabindex="0">
+          <div class="timeline-thumb"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Picnic photo placeholder"></div>
+          <div class="timeline-meta">
+            <div class="timeline-date">2024-01-20</div>
+            <div class="timeline-caption">A quiet picnic and your laugh like sunlight</div>
+          </div>
+        </article>
+        <article class="timeline-item" data-index="3" tabindex="0">
+          <div class="timeline-thumb"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Sunset photo placeholder"></div>
+          <div class="timeline-meta">
+            <div class="timeline-date">2024-08-05</div>
+            <div class="timeline-caption">Sunset ride — I learned your favorite song</div>
+          </div>
+        </article>
+        <article class="timeline-item" data-index="4" tabindex="0">
+          <div class="timeline-thumb"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Lantern photo placeholder"></div>
+          <div class="timeline-meta">
+            <div class="timeline-date">2025-02-14</div>
+            <div class="timeline-caption">A little promise under the paper lanterns</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <div class="modal" id="modal">
+      <button class="modal-close" id="modalClose">✕</button>
+      <h3 id="modalTitle"></h3>
+      <p id="modalText"></p>
+      <div id="modalImage" style="text-align:center;margin-top:1rem;"></div>
+    </div>
+
+    <!-- GALLERY -->
+    <section class="gallery" aria-label="Photo gallery">
+      <h2 style="font-size:1.25rem;color:#3a0b2a;">Photo Gallery</h2>
+      <div style="margin:1rem 0;display:flex;gap:1rem;">
+        <label class="btn"><input type="checkbox" id="ghibliToggle"> Ghibli filter</label>
+        <button id="audioToggle" class="btn" aria-pressed="false">Play music</button>
+        <audio id="bgAudio" loop preload="none"><source src="" type="audio/mpeg"></audio>
+      </div>
+      <div class="carousel">
+        <div class="slides" id="slides">
+          <figure class="slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Gallery photo 1"><figcaption class="caption">Our first laugh together</figcaption></figure>
+          <figure class="slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Gallery photo 2"><figcaption class="caption">Rainy day smiles</figcaption></figure>
+          <figure class="slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="Gallery photo 3"><figcaption class="caption">Picnic by the lake</figcaption></figure>
+        </div>
+        <div class="carousel-controls">
+          <button class="btn" id="prev">&#10094;</button>
+          <button class="btn" id="next">&#10095;</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOVE LETTER -->
+    <section class="letter">
+      <div class="letter-card">
+        <div class="paper closed" id="letter">
+          <div class="paper-inner">
+            <div class="paper-meta"><span class="small">A Letter for Kanishka</span><button class="btn" id="toggleLetter">Open</button></div>
+            <div class="paper-content">
+              My Dearest Kanishka,<br><br>
+              From the first moment I saw your smile, my world shifted in colors I never knew existed. 
+              Every laugh we shared, every quiet glance, has become a cherished part of my heart. 
+              I hope this little journey brings you the warmth and magic you bring me every day.<br><br>
+              Forever yours,<br>
+              Jayprakash
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn" id="sendBtn" style="margin-top:1rem;">Send this to Kanishka</button>
+    </section>
+  </main>
+
+  <footer>&copy; 2025 Jayprakash & Kanishka — A Dreamy Love Journey</footer>
+</div>
+
+<script>
+  // Scroll down hero arrow
+  document.getElementById('scrollDown').addEventListener('click',()=>{document.getElementById('timeline').scrollIntoView({behavior:'smooth'})});
+
+  // Timeline fade-in on scroll
+  const timelineItems=document.querySelectorAll('.timeline-item');
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){entry.target.classList.add('in-view');}
+    });
+  }, {threshold:0.2});
+  timelineItems.forEach(item=>observer.observe(item));
+
+  // Timeline modal content
+  const modal=document.getElementById('modal');
+  const modalTitle=document.getElementById('modalTitle');
+  const modalText=document.getElementById('modalText');
+  const modalImage=document.getElementById('modalImage');
+  const modalClose=document.getElementById('modalClose');
+  const memories=[
+    {title:"First Meeting",desc:"We exchanged our first shy hellos at the coffee stall. It felt magical.",img:"<!-- replace with your-photo.jpg -->"},
+    {title:"Rain Walk",desc:"We walked together under the rain, sharing an umbrella and laughter.",img:"<!-- replace with your-photo.jpg -->"},
+    {title:"Picnic Day",desc:"A cozy picnic where your laughter brightened my world.",img:"<!-- replace with your-photo.jpg -->"},
+    {title:"Sunset Ride",desc:"Riding bikes at sunset, listening to your favorite songs.",img:"<!-- replace with your-photo.jpg -->"},
+    {title:"Lantern Promise",desc:"We made little promises under floating lanterns.",img:"<!-- replace with your-photo.jpg -->"}
+  ];
+  timelineItems.forEach(item=>{
+    item.addEventListener('click',()=>{
+      const idx=parseInt(item.dataset.index);
+      modalTitle.textContent=memories[idx].title;
+      modalText.textContent=memories[idx].desc;
+      modalImage.innerHTML=`<img src="${memories[idx].img}" alt="${memories[idx].title}" style="max-width:100%;border-radius:10px;">`;
+      modal.classList.add('open');
+    });
+  });
+  modalClose.addEventListener('click',()=>{modal.classList.remove('open');});
+  modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('open');});
+
+  // Gallery carousel
+  const slides=document.getElementById('slides');
+  const totalSlides=slides.children.length;
+  let currentIndex=0;
+  document.getElementById('next').addEventListener('click',()=>{currentIndex=(currentIndex+1)%totalSlides;updateSlide();});
+  document.getElementById('prev').addEventListener('click',()=>{currentIndex=(currentIndex-1+totalSlides)%totalSlides;updateSlide();});
+  function updateSlide(){slides.style.transform=`translateX(-${currentIndex*100}%)`;}
+
+  // Ghibli filter toggle
+  const ghibliToggle=document.getElementById('ghibliToggle');
+  ghibliToggle.addEventListener('change',()=>{slides.classList.toggle('ghibli',ghibliToggle.checked);});
+
+  // Music toggle
+  const audioToggle=document.getElementById('audioToggle');
+  const bgAudio=document.getElementById('bgAudio');
+  audioToggle.addEventListener('click',()=>{
+    if(bgAudio.paused){bgAudio.play();audioToggle.textContent="Pause music";audioToggle.setAttribute('aria-pressed','true');}
+    else{bgAudio.pause();audioToggle.textContent="Play music";audioToggle.setAttribute('aria-pressed','false');}
+  });
+
+  // Love letter toggle
+  const letter=document.getElementById('letter');
+  const toggleLetter=document.getElementById('toggleLetter');
+  toggleLetter.addEventListener('click',()=>{letter.classList.toggle('closed');});
+
+  // Confetti effect on send
+  document.getElementById('sendBtn').addEventListener('click',()=>{
+    for(let i=0;i<100;i++){
+      const c=document.createElement('div');
+      c.style.position='fixed';
+      c.style.width='8px';
+      c.style.height='8px';
+      c.style.background=['#ff77a9','#ffd6e0','#ffe0cc','#ffb6c1'][Math.floor(Math.random()*4)];
+      c.style.top='-10px';
+      c.style.left=Math.random()*window.innerWidth+'px';
+      c.style.borderRadius='50%';
+      c.style.opacity=Math.random();
+      c.style.zIndex=9999;
+      document.body.appendChild(c);
+      let top=0;
+      const fall=setInterval(()=>{top+=3;c.style.top=top+'px';if(top>window.innerHeight){clearInterval(fall);c.remove();}},16);
+    }
+  });
+</script>
+</body>
+</html>
